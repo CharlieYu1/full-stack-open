@@ -1,16 +1,13 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
+import phonebookService from './services/phonebook.js'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ])
+
+  const [persons, setPersons] = useState([])
 
   const [filter, setFilter] = useState('')
 
@@ -18,6 +15,12 @@ const App = () => {
 
   const [newNumber, setNewNumber] = useState('')
 
+  useEffect(() => {
+    phonebookService.getAll().then(data =>
+      setPersons(data)
+    )
+  }, [])
+  
   const handleNewNameChange = (event) => {
     event.preventDefault()
     setNewName(event.target.value)
@@ -35,11 +38,24 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    if (persons.map(person => person.name).includes(newName)) {
-      alert(`${newName} is already added to phonebook`)
+    if (persons.filter(person => person.name === newName).length > 0) {
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with the new one?`)) {
+        var id = persons.filter(person => person.name === newName)[0].id;
+        phonebookService.update(id, { name: newName, number: newNumber }).then(data => {
+          setPersons(persons.map(person => person.id === id ? data : person))
+        });
+      }
     } else {
-      setPersons([...persons, { name: newName, number: newNumber }])
+      phonebookService.create({ name: newName, number: newNumber }).then(data => {
+        setPersons(persons.concat(data))
+      })
     }
+  }
+
+  const handleDelete = (id) => {
+    phonebookService.del(id).then(
+      setPersons(persons.filter(p => p.id !== id))
+    )
   }
 
   return (
@@ -56,7 +72,7 @@ const App = () => {
       />
       <h3>Numbers</h3>
       <div>
-        <Persons persons={persons.filter(person => person.name.includes(filter))}></Persons>
+        <Persons persons={persons.filter(person => person.name.includes(filter))} handleDelete={handleDelete}></Persons>
       </div>
     </div>
   )
