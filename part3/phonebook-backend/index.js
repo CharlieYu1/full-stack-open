@@ -9,7 +9,6 @@ const app = express()
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
-const PORT = 3001
 let phonebook = [
     { 
       "id": 1,
@@ -33,7 +32,7 @@ let phonebook = [
     }
 ]
 
-app.get('/', (req, res) => {
+app.get('/api/persons/', (req, res) => {
     res.send(JSON.stringify(phonebook))
 })
 
@@ -82,4 +81,5 @@ app.get('/info', (req, res) => {
     res.end()
 })
 
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
