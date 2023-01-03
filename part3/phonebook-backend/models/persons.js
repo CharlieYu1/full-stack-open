@@ -12,8 +12,14 @@ mongoose.connect(url).then(result => {
 console.log('connecting to', url)
 
 const personsSchema = new mongoose.Schema({
-	name: String,
-	number: String,
+	name: {
+		type: String,
+		required: true
+	},
+	number: {
+		type: String,
+		required: true
+	},
 })
 
 personsSchema.set('toJSON', {
