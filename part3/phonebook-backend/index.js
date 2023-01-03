@@ -8,6 +8,7 @@ const errorHandler = (error, req, res, next) => {
 	if (error.name === 'CastError') {
 		return res.status(400).send({error: 'malformatted id'})
 	} else if (error.name === 'ValidationError') {
+		console.log("Here", error.message)
 		return res.status(400).send({ error: error.message})
 	}
 	
@@ -46,25 +47,18 @@ app.delete('/api/persons/:id', (req, res, next) => {
 
 app.post('/api/persons/', (req, res, next) => {
 	const person = req.body
-	console.log(req.body)
-	//check validity
-	Person.find({name: person.name}).then(persons => {
-		if (persons.length > 0) {
-			res.status(404).send({ error: 'name must be unique' })
-			return
-		}
-	}).then(() => {
-		if (!res.headersSent) {
-			const newPerson = new Person({
-				name: person.name,
-				number: person.number
-			})
-			
-			newPerson.save().then(savedPerson => {
-				res.json(savedPerson)
-			})
-		}
-	}).catch(error => next(error))
+	
+	const newPerson = new Person({
+		name: person.name,
+		number: person.number
+	})
+	
+	newPerson.save().then(savedPerson => {
+		res.json(savedPerson)
+	}).catch(error => {
+		console.log('here1')
+		next(error)
+	})
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
