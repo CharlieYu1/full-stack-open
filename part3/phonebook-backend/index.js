@@ -56,7 +56,6 @@ app.post('/api/persons/', (req, res, next) => {
 	newPerson.save().then(savedPerson => {
 		res.json(savedPerson)
 	}).catch(error => {
-		console.log('here1')
 		next(error)
 	})
 })

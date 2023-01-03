@@ -1,7 +1,7 @@
-POST http://localhost:3001/api/persons/ HTTP/1.1
+POST https://full-stack-open-production.up.railway.app/api/persons/ HTTP/1.1
 content-type: application/json
 
 {
-    "name": "Charlie",
+    "name": "Ch",
     "number": "1234565"
 }

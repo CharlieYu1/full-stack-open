@@ -17,21 +17,21 @@ const App = () => {
   const errorStyle = {
     color: 'red',
     background: 'lightgrey',
-    'font-size': '20px',
-    'border-style': 'solid',
-    'border-radius': '5px',
+    'fontSize': '20px',
+    'borderStyle': 'solid',
+    'borderRadius': '5px',
     'padding': '10px',
-    'margin-bottom': '10px,'
+    'marginBottom': '10px,'
   }
 
   const successStyle = {
     color: 'green',
     background: 'lightgrey',
-    'font-size': '20px',
-    'border-style': 'solid',
-    'border-radius': '5px',
+    'fontSize': '20px',
+    'borderStyle': 'solid',
+    'borderRadius': '5px',
     'padding': '10px',
-    'margin-bottom': '10px,'
+    'marginBottom': '10px,'
   }  
 
   const [messageStyle, setMessageStyle] = useState(successStyle)
@@ -66,9 +66,10 @@ const App = () => {
           setPersons(persons.map(person => person.id === id ? data : person))
           setMessage(`Information of ${newName} updated`)
           setMessageStyle(successStyle)
-        }).catch(() => {
+        }).catch((error) => {
           setMessage(`Information of ${newName} can't be updated`)
           setMessageStyle(errorStyle)
+          console.log(error.response.data.error)
         });
       }
     } else {
@@ -76,9 +77,10 @@ const App = () => {
         setPersons(persons.concat(data))
         setMessage(`Added ${newName}`)
         setMessageStyle(successStyle)
-      }).catch(() => {
+      }).catch((error) => {
         setMessage(`Can't add ${newName}`)
         setMessageStyle(errorStyle)
+        console.log(error.response.data.error)
       });
     }
   }
@@ -89,9 +91,10 @@ const App = () => {
       setPersons(persons.filter(p => p.id !== id))
       setMessage(`Deleted ${name}`)
       setMessageStyle(successStyle)
-    }).catch(() => {
+    }).catch((error) => {
       setMessage(`Information of ${name} has already been removed from server`)
       setMessageStyle(errorStyle)
+      console.log(error.response.error.style)
     })
   }
 
