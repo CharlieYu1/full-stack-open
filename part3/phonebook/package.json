@@ -38,6 +38,7 @@
     ]
   },
   "devDependencies": {
+    "eslint": "^8.31.0",
     "json-server": "^0.17.1"
   }
 }

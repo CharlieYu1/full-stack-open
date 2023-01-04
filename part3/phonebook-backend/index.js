@@ -7,12 +7,12 @@ const errorHandler = (error, req, res, next) => {
 	console.log('Name of error: ', error.name)
 	console.error(error.message)
 	if (error.name === 'CastError') {
-		return res.status(400).send({error: 'malformatted id'})
+		return res.status(400).send({ error: 'malformatted id' })
 	} else if (error.name === 'ValidationError') {
-		console.log("Here", error.message)
-		return res.status(400).send({ error: error.message})
+		console.log('Here', error.message)
+		return res.status(400).send({ error: error.message })
 	}
-	
+
 	next(error)
 }
 
@@ -30,7 +30,7 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 app.get('/api/persons/', (req, res, next) => {
 	Person.find({}).then(persons => {
 		res.json(persons)
-	})
+	}).catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
@@ -40,19 +40,19 @@ app.get('/api/persons/:id', (req, res, next) => {
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
-	Person.findByIdAndRemove(req.params.id).then(result => {
+	Person.findByIdAndRemove(req.params.id).then(() => {
 		res.status(204).end()
 	}).catch(error => next(error))
 })
 
 app.post('/api/persons/', (req, res, next) => {
 	const person = req.body
-	
+
 	const newPerson = new Person({
 		name: person.name,
 		number: person.number
 	})
-	
+
 	newPerson.save().then(savedPerson => {
 		res.json(savedPerson)
 	}).catch(error => {
@@ -62,26 +62,26 @@ app.post('/api/persons/', (req, res, next) => {
 
 app.put('/api/persons/:id', (req, res, next) => {
 	const { name, number }  = req.body
-	
-	
-	
-	Person.findByIdAndUpdate(req.params.id, 
-		{ name, number }, 
+
+
+
+	Person.findByIdAndUpdate(req.params.id,
+		{ name, number },
 		{ new: true, runValidators: true, context: 'query' }
 	).then(updatedPerson => {
 		res.json(updatedPerson)
 	}).catch(error => next(error))
-	
+
 })
 
 app.get('/info', (req, res) => {
-	const date = new Date();
+	const date = new Date()
 	Person.count({}).then(count => {
 		res.write(`Phonebook has info for ${count} people\n`)
 		res.write(date.toString())
 		res.end()
 	})
-	
+
 })
 
 app.use(errorHandler)
