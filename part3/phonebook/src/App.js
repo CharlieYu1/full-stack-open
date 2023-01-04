@@ -67,7 +67,7 @@ const App = () => {
           setMessage(`Information of ${newName} updated`)
           setMessageStyle(successStyle)
         }).catch((error) => {
-          setMessage(`Information of ${newName} can't be updated`)
+          setMessage(error.response.data.error)
           setMessageStyle(errorStyle)
           console.log(error.response.data.error)
         });
@@ -78,7 +78,7 @@ const App = () => {
         setMessage(`Added ${newName}`)
         setMessageStyle(successStyle)
       }).catch((error) => {
-        setMessage(`Can't add ${newName}`)
+        setMessage(error.response.data.error)
         setMessageStyle(errorStyle)
         console.log(error.response.data.error)
       });
@@ -92,7 +92,7 @@ const App = () => {
       setMessage(`Deleted ${name}`)
       setMessageStyle(successStyle)
     }).catch((error) => {
-      setMessage(`Information of ${name} has already been removed from server`)
+      setMessage(error.response.data.error)
       setMessageStyle(errorStyle)
       console.log(error.response.error.style)
     })
