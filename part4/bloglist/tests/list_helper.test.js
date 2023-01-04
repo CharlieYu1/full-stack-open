@@ -44,7 +44,7 @@ describe('total likes', () => {
       likes: 7,
       __v: 0
     },
-  ]  
+  ]
 
   test('of empty list is zero', () => {
     const result = listHelper.totalLikes([])
@@ -59,7 +59,7 @@ describe('total likes', () => {
   test('of a bigger list is calculated right', () => {
     const result = listHelper.totalLikes(listWithThreeBlogs)
     expect(result).toBe(18)
-  })  
+  })
 })
 
 describe('favorite blog', () => {
@@ -87,7 +87,7 @@ describe('favorite blog', () => {
       author: 'Charlie',
       likes: -3,
     },
-  ]  
+  ]
 
   test('of empty list is empty', () => {
     const result = listHelper.favoiteBlog([])
@@ -110,7 +110,7 @@ describe('favorite blog', () => {
       author: 'Edsger W. Dijkstra',
       likes: 12,
     })
-  })  
+  })
 })
 
 describe('author with most blogs', () => {
@@ -159,7 +159,7 @@ describe('author with most blogs', () => {
       author: 'Robert C. Martin',
       blogs: 3
     })
-  })  
+  })
 })
 
 describe('author with most likes', () => {
@@ -188,7 +188,7 @@ describe('author with most likes', () => {
       author: 'Edsger W. Dijkstra',
       likes: 5,
     },
-  ]  
+  ]
 
   test('of empty list is empty', () => {
     const result = listHelper.mostLikes([])
@@ -209,5 +209,5 @@ describe('author with most likes', () => {
       author: 'Edsger W. Dijkstra',
       blogs: 17
     })
-  })  
+  })
 })

@@ -37,7 +37,7 @@ const mostBlogs = (blogs) => {
     }
   })
 
-  return {author: maxBlogAuthor, blogs: maxBlogCount}
+  return { author: maxBlogAuthor, blogs: maxBlogCount }
 }
 
 const mostLikes = (blogs) => {
@@ -59,7 +59,7 @@ const mostLikes = (blogs) => {
     }
   })
 
-  return {author: maxLikesAuthor, blogs: maxLikesCount}
+  return { author: maxLikesAuthor, blogs: maxLikesCount }
 }
 
 module.exports = {
