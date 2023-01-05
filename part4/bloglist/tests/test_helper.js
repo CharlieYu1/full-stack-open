@@ -39,6 +39,7 @@ const newPostMissingTitle = {
   url: 'http://example.com',
 }
 
+const fakeId = '0123456789abcdef01234567'
 
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
@@ -46,5 +47,5 @@ const blogsInDb = async () => {
 }
 
 module.exports = {
-  initialBlogs, newPost, newPostMissingUrl, newPostMissingTitle, blogsInDb
+  initialBlogs, newPost, newPostMissingUrl, newPostMissingTitle, blogsInDb, fakeId
 }
