@@ -28,7 +28,7 @@ test('blogs have property id', async () => {
 })
 
 test('create new post', async () => {
-  await api.post('/api/blogs').send(helper.newPost).expect(201).expect(
+  await api.post('/api/blogs').send(helper.newBlog).expect(201).expect(
     'Content-Type', /application\/json/
   )
   const blogsAtEnd = await helper.blogsInDb()
@@ -36,7 +36,7 @@ test('create new post', async () => {
 })
 
 test('default zero likes', async () => {
-  await api.post('/api/blogs').send(helper.newPost).then(result => {
+  await api.post('/api/blogs').send(helper.newBlog).then(result => {
     const blog = new Blog(result.body)
     expect(blog.likes).toEqual(0)
   })
@@ -45,28 +45,28 @@ test('default zero likes', async () => {
 describe('request missing title or url ends in bad request', () => {
 
   test('of missing title', async () => {
-    await api.post('/api/blogs').send(helper.newPostMissingTitle).expect(400)
+    await api.post('/api/blogs').send(helper.newBlogMissingTitle).expect(400)
   })
 
   test('of missing url', async () => {
-    await api.post('/api/blogs').send(helper.newPostMissingUrl).expect(400)
+    await api.post('/api/blogs').send(helper.newBlogMissingUrl).expect(400)
   })
 })
 
 test('put routes can update posts', async () => {
-  const blog = await Blog.create({
-    title: 'Title',
-    url: 'http://example.com',
-    author: 'Charlie',
-    likes: 0
+  const newBlog = helper.newBlog
+
+  const newBlogId = await api.post('/api/blogs').send(newBlog)
+  .then(async response => {
+    return response.body._id
   })
 
-  await api.put(`/api/blogs/${blog.id}`)
+  await api.put(`/api/blogs/${newBlogId}`)
     .send({ likes: 15 }).expect(200).then(async response => {
-      expect(response.body._id).toBe(blog.id)
-      expect(response.body.title).toBe(blog.title)
-      expect(response.body.author).toBe(blog.author)
-      expect(response.body.url).toBe(blog.url)
+      expect(response.body._id).toBe(newBlogId)
+      expect(response.body.title).toBe(newBlog.title)
+      expect(response.body.author).toBe(newBlog.author)
+      expect(response.body.url).toBe(newBlog.url)
       expect(response.body.likes).toBe(15)
     })
 })

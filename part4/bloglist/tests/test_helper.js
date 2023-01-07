@@ -21,20 +21,39 @@ const initialBlogs = [
   },
 ]
 
-const newPost = {
-  title: 'Another post',
+const initialUsers = [
+  {
+    'username': 'charlie',
+    'password': 'abc123',
+    'name': 'Charlie'
+  },
+  {
+    'username': 'charlie',
+    'password': 'pppqqq999888',
+    'name': 'Peter Wong'
+  },
+  {
+    'username': 'charlie',
+    'password': '!@#$%^&*()',
+    'name': 'Joey Chan'
+  }
+]
+
+const newBlog = {
+  title: 'Another blog',
   author: 'Charlie',
   url: 'http://example.com',
+  likes: 0,
 }
 
 
-const newPostMissingUrl = {
+const newBlogMissingUrl = {
   title: 'Another post',
   author: 'Charlie',
 }
 
 
-const newPostMissingTitle = {
+const newBlogMissingTitle = {
   author: 'Charlie',
   url: 'http://example.com',
 }
@@ -47,5 +66,11 @@ const blogsInDb = async () => {
 }
 
 module.exports = {
-  initialBlogs, newPost, newPostMissingUrl, newPostMissingTitle, blogsInDb, fakeId
+  initialBlogs,
+  initialUsers,
+  newBlog,
+  newBlogMissingUrl,
+  newBlogMissingTitle,
+  blogsInDb,
+  fakeId
 }
