@@ -1,15 +1,45 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('./test_helper')
+const config = require('../utils/config')
+
+let firstUserToken
+let secondUserToken
 
 beforeEach(async () => {
+  await User.deleteMany({})
+  const saltRounds = 12
+
+  const firstUserObject = { 'username': 'charlie', 'password': 'abc123', 'name': 'charlie' }
+  const firstPasswordHash = await bcrypt.hash(firstUserObject.password, saltRounds)
+  const firstUser = new User({ ...firstUserObject, passwordHash: firstPasswordHash })
+  await firstUser.save()
+  const firstUserForToken = {
+    username: firstUser.username,
+    id: firstUser.id
+  }
+  firstUserToken = jwt.sign(firstUserForToken, config.SECRET)
+
+  const secondUserObject = { 'username': 'charlie', 'password': 'abc123', 'name': 'charlie' }
+  const secondPasswordHash = await bcrypt.hash(secondUserObject.password, saltRounds)
+  const secondUser = new User({ ...secondUserObject, passwordHash: secondPasswordHash })
+  await secondUser.save()
+  const secondUserForToken = {
+    username: secondUser.username,
+    id: secondUser.id
+  }
+  secondUserToken = jwt.sign(secondUserForToken, config.SECRET)
+
   await Blog.deleteMany({})
-  const blogObjects = helper.initialBlogs.map(blog => new Blog(blog))
-  const promiseArray = blogObjects.map(blog => blog.save())
-  await Promise.all(promiseArray)
+  const blogObjects = helper.initialBlogs.map(blog => new Blog({ ...blog, user: firstUser.id }))
+  const userPromiseArray = blogObjects.map(blog => blog.save())
+  await Promise.all(userPromiseArray)
 })
 
 test('blogs are returned as json', async () => {
@@ -28,7 +58,7 @@ test('blogs have property id', async () => {
 })
 
 test('create new post', async () => {
-  await api.post('/api/blogs').send(helper.newBlog).expect(201).expect(
+  await api.post('/api/blogs').send(helper.newBlog).set('Authorization', `bearer ${firstUserToken}`).expect(201).expect(
     'Content-Type', /application\/json/
   )
   const blogsAtEnd = await helper.blogsInDb()
@@ -36,8 +66,8 @@ test('create new post', async () => {
 })
 
 test('default zero likes', async () => {
-  await api.post('/api/blogs').send(helper.newBlog).then(result => {
-    const blog = new Blog(result.body)
+  await api.post('/api/blogs').send(helper.newBlog).set('Authorization', `bearer ${firstUserToken}`).then(response => {
+    const blog = new Blog(response.body)
     expect(blog.likes).toEqual(0)
   })
 })
@@ -45,46 +75,71 @@ test('default zero likes', async () => {
 describe('request missing title or url ends in bad request', () => {
 
   test('of missing title', async () => {
-    await api.post('/api/blogs').send(helper.newBlogMissingTitle).expect(400)
+    await api.post('/api/blogs').send(helper.newBlogMissingTitle).set('Authorization', `bearer ${firstUserToken}`).expect(400)
   })
 
   test('of missing url', async () => {
-    await api.post('/api/blogs').send(helper.newBlogMissingUrl).expect(400)
+    await api.post('/api/blogs').send(helper.newBlogMissingUrl).set('Authorization', `bearer ${firstUserToken}`).expect(400)
   })
 })
 
-test('put routes can update posts', async () => {
-  const newBlog = helper.newBlog
+describe('put routes can update posts', () => {
+  test('for the author', async () => {
+    const newBlog = helper.newBlog
 
-  const newBlogId = await api.post('/api/blogs').send(newBlog)
-  .then(async response => {
-    return response.body._id
-  })
-
-  await api.put(`/api/blogs/${newBlogId}`)
-    .send({ likes: 15 }).expect(200).then(async response => {
-      expect(response.body._id).toBe(newBlogId)
-      expect(response.body.title).toBe(newBlog.title)
-      expect(response.body.author).toBe(newBlog.author)
-      expect(response.body.url).toBe(newBlog.url)
-      expect(response.body.likes).toBe(15)
+    const newBlogId = await api.post('/api/blogs').send(newBlog).set('Authorization', `bearer ${firstUserToken}`).then(async response => {
+      return response.body.id
     })
-})
 
-test('delete routes can delete posts', async () => {
-  const blog = await Blog.create({
-    title: 'Title',
-    url: 'http://example.com',
-    author: 'Charlie',
-    likes: 0
+    await api.put(`/api/blogs/${newBlogId}`)
+      .send({ likes: 15 }).set('Authorization', `bearer ${firstUserToken}`).expect(200).then(async response => {
+        expect(response.body.id).toBe(newBlogId)
+        expect(response.body.title).toBe(newBlog.title)
+        expect(response.body.author).toBe(newBlog.author)
+        expect(response.body.url).toBe(newBlog.url)
+        expect(response.body.likes).toBe(15)
+      })
   })
 
-  await api.delete(`/api/blogs/${blog.id}`).expect(204)
-  await api.delete(`/api/blogs/${blog.id}`).expect(400)
+  test('not for another user', async () => {
+    const newBlog = helper.newBlog
+
+    const newBlogId = await api.post('/api/blogs').send(newBlog).set('Authorization', `bearer ${firstUserToken}`).then(async response => {
+      return response.body.id
+    })
+
+    await api.put(`/api/blogs/${newBlogId}`).send({ likes: 15 }).set('Authorization', `bearer ${secondUserToken}`).expect(401)
+  })
 })
 
-test('put routes of nonexistant Id returns 400', async () => {
-  await api.put(`/api/blogs/${helper.fakeId}`).send({ likes: 15 }).expect(400)
+
+describe('delete routes can delete posts', () => {
+  test('for the author', async () => {
+    const newBlog = helper.newBlog
+
+    const newBlogId = await api.post('/api/blogs').send(newBlog).set('Authorization', `bearer ${firstUserToken}`).then(async response => {
+      return response.body.id
+    })
+
+    await api.delete(`/api/blogs/${newBlogId}`).set('Authorization', `bearer ${firstUserToken}`).expect(204)
+    await api.delete(`/api/blogs/${newBlogId}`).set('Authorization', `bearer ${firstUserToken}`).expect(401)
+  })
+
+  test('not for another user', async () => {
+    const newBlog = helper.newBlog
+
+    const newBlogId = await api.post('/api/blogs').send(newBlog).set('Authorization', `bearer ${firstUserToken}`).then(async response => {
+      return response.body.id
+    })
+
+    await api.delete(`/api/blogs/${newBlogId}`).set('Authorization', `bearer ${secondUserToken}`).expect(401)
+    await api.delete(`/api/blogs/${newBlogId}`).set('Authorization', `bearer ${secondUserToken}`).expect(401)
+  })
+})
+
+
+test('put routes of nonexistant Id returns 401', async () => {
+  await api.put(`/api/blogs/${helper.fakeId}`).send({ likes: 15 }).set('Authorization', `bearer ${firstUserToken}`).expect(401)
 })
 
 afterAll(() => {
