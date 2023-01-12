@@ -22,8 +22,8 @@ const tokenExtractor = async (request, response, next) => {
 const userExtractor = async (request, response, next) => {
   const decodedToken = request.decodedToken
 
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token missing or invalid' })
+  if (!decodedToken || !decodedToken.id) {
+    request.user = null
   }
   try {
     const user = await User.findById(decodedToken.id, { passwordHash: 0 })
