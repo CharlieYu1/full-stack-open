@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import BlogList from './components/BlogList'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -15,10 +15,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
-
+  
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
@@ -56,19 +53,10 @@ const App = () => {
     window.localStorage.removeItem('loggedBlogappUser')
   }
 
-  const addBlog = async (event) => {
-    event.preventDefault()
-    const blogObject = {
-      title: title,
-      author: author,
-      url: url
-    }
-
+  const createBlog = (blogObject) => {
+    blogFormRef.current.toggleVisibility()
     blogService.create(blogObject).then(returnedBlog => {
       setBlogs(blogs.concat(returnedBlog))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
       setMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
     }).catch(error => {setMessage(error.response.data.message)})
   }
@@ -79,21 +67,17 @@ const App = () => {
     })
   }, [])
 
+  const blogFormRef = useRef()
+
   return (
     <>
       {message ? <Notification message={message} /> : null}
       {user ? <div>
         <h2>blogs</h2>
         <UserDetail username={user.username} handleLogout={handleLogout} />
-        <Togglable buttonLabel="create new blog">
+        <Togglable buttonLabel="create new blog" ref={blogFormRef}>
           <NewBlogForm 
-            title={title}
-            setTitle={setTitle}
-            author={author}
-            setAuthor={setAuthor}
-            url={url}
-            setUrl={setUrl}
-            addBlog={addBlog}
+            createBlog={createBlog}
           />
         </Togglable>
         <br />

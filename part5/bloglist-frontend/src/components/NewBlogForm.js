@@ -1,6 +1,20 @@
 import React from 'react'
+import { useState } from 'react'
 
-const NewBlogForm = ({ addBlog, title, setTitle, author, setAuthor, url, setUrl }) => {
+const NewBlogForm = ({ createBlog }) => {
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+
+  const addBlog = (event) => {
+    event.preventDefault()
+    createBlog({
+      title: title,
+      author: author,
+      url: url
+    })
+  }
+
   return (
     <div>
       <h2>create new</h2>
