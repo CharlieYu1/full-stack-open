@@ -83,7 +83,7 @@ blogsRouter.post('/:id/likes', async (request, response, next) => {
     likes: blog.likes + 1
   }, {
     new: true, runValidators: true, context: 'query'
-  }).then(blog => {
+  }).populate('user').then(blog => {
     if (!blog) {
       response.send(400).end()
     } else {
