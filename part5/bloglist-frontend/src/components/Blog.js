@@ -12,16 +12,13 @@ const Blog = forwardRef((props, ref) => {
 
   const blog = props.blog
   const [visible, setVisible] = useState(false)
+  const handleLike = props.handleLike
   
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
 
   const toggleVisibility = () => {
     setVisible(!visible)
-  }
-
-  const handleLike = (event) => {
-
   }
 
   return (
@@ -31,7 +28,7 @@ const Blog = forwardRef((props, ref) => {
       </div>
       <div style={showWhenVisible}>
         {blog.url}<br/>
-        likes: {blog.likes} <button onClick={handleLike}>like</button><br/>
+        likes: {blog.likes} <button onClick={() => handleLike(blog)}>like</button><br/>
         {blog.user.username}<br/>
       </div>
     </div>

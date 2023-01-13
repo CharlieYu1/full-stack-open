@@ -53,6 +53,16 @@ const App = () => {
     window.localStorage.removeItem('loggedBlogappUser')
   }
 
+  const handleLike = async (blog) => {
+    const id = blog.id
+    blogService.like(blog).then(returnedBlog => {
+      console.log(returnedBlog)
+      setBlogs(blogs.map(blog => (
+        blog.id === id ? returnedBlog : blog
+      )))
+    })
+  }
+
   const createBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
     blogService.create(blogObject).then(returnedBlog => {
@@ -63,6 +73,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs => {
+      console.log(blogs)
       setBlogs( blogs )
     })
   }, [])
@@ -81,7 +92,7 @@ const App = () => {
           />
         </Togglable>
         <br />
-        <BlogList blogs={blogs}/>
+        <BlogList blogs={blogs} handleLike={handleLike}/>
       </div> : <Togglable buttonLabel="login">
         <LoginForm
           username={username}
