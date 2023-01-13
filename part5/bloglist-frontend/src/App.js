@@ -49,7 +49,7 @@ const App = () => {
     event.preventDefault()
     setUser(null)
     blogService.setToken('')
-    setMessage(`You have logged out`)
+    setMessage('You have logged out')
     window.localStorage.removeItem('loggedBlogappUser')
   }
 
@@ -82,13 +82,16 @@ const App = () => {
         </Togglable>
         <br />
         <BlogList blogs={blogs}/>
-      </div> : <LoginForm
-        username={username}
-        password={password}
-        setUsername={setUsername}
-        setPassword={setPassword}
-        handleLogin={handleLogin}
-      /> }
+      </div> : <Togglable buttonLabel="login">
+        <LoginForm
+          username={username}
+          password={password}
+          setUsername={setUsername}
+          setPassword={setPassword}
+          handleLogin={handleLogin}
+        />
+      </Togglable>
+      }
     </>
   )
 }
