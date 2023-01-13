@@ -137,6 +137,24 @@ describe('delete routes can delete posts', () => {
   })
 })
 
+describe('users can like posts', () => {
+  test('for logged in users only', async () => {
+    const newBlog = helper.newBlog
+
+    const newBlogId = await api.post('/api/blogs').send(newBlog).set('Authorization', `bearer ${firstUserToken}`).then(async response => {
+      return response.body.id
+    })
+
+
+    await api.post(`/api/blogs/${newBlogId}/likes`).set('Authorization', `bearer ${firstUserToken}`).expect(200).then(async response => {
+      expect(response.body.likes).toBe(1)
+    })
+    await api.post(`/api/blogs/${newBlogId}/likes`).set('Authorization', `bearer ${secondUserToken}`).expect(200).then(async response => {
+      expect(response.body.likes).toBe(2)
+    })
+    await api.post(`/api/blogs/${newBlogId}/likes`).expect(401)
+  })
+})
 
 test('put routes of nonexistant Id returns 401', async () => {
   await api.put(`/api/blogs/${helper.fakeId}`).send({ likes: 15 }).set('Authorization', `bearer ${firstUserToken}`).expect(401)

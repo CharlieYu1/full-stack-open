@@ -49,7 +49,6 @@ blogsRouter.post('', async (request, response, next) => {
     await user.save()
     response.status(201).json(savedBlog)
   } catch (error) {
-    console.log(error)
     response.status(400).json(error)
     next(error)
   }
@@ -72,5 +71,26 @@ blogsRouter.put('/:id', async (request, response, next) => {
     }
   }).catch(error => next(error))
 })
+
+blogsRouter.post('/:id/likes', async (request, response, next) => {
+  const blog = await Blog.findById(request.params.id)
+
+  if (!request.user) {
+    return response.status(401).json({ error: 'You need to login to like a post' })
+  }
+
+  Blog.findByIdAndUpdate(request.params.id, {
+    likes: blog.likes + 1
+  }, {
+    new: true, runValidators: true, context: 'query'
+  }).then(blog => {
+    if (!blog) {
+      response.send(400).end()
+    } else {
+      response.json(blog)
+    }
+  }).catch(error => next(error))
+})
+
 
 module.exports = blogsRouter
