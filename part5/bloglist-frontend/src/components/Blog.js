@@ -13,6 +13,7 @@ const Blog = forwardRef((props, ref) => {
   const blog = props.blog
   const [visible, setVisible] = useState(false)
   const handleLike = props.handleLike
+  const handleDelete = props.handleDelete
   
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
@@ -30,6 +31,7 @@ const Blog = forwardRef((props, ref) => {
         {blog.url}<br/>
         likes: {blog.likes} <button onClick={() => handleLike(blog)}>like</button><br/>
         {blog.user.username}<br/>
+        {blog.user.username === props.user.username ? <button onClick={() => handleDelete(blog)}>delete</button> : null}
       </div>
     </div>
   )

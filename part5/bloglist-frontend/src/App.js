@@ -56,16 +56,25 @@ const App = () => {
   const handleLike = async (blog) => {
     const id = blog.id
     blogService.like(blog).then(returnedBlog => {
-      console.log(returnedBlog)
       setBlogs(blogs.map(blog => (
         blog.id === id ? returnedBlog : blog
       )))
     })
   }
 
-  const createBlog = (blogObject) => {
+  const handleDelete = async (blog) => {
+    const id = blog.id
+    blogService.deleteBlog(blog).then(returnedObject => {
+      setBlogs(blogs.filter(blog => (
+        blog.id !== id
+      )))
+    })
+  }
+
+  const createBlog = (blog) => {
     blogFormRef.current.toggleVisibility()
-    blogService.create(blogObject).then(returnedBlog => {
+    blogService.create(blog).then(returnedBlog => {
+      console.log('returnedBlog', returnedBlog)
       setBlogs(blogs.concat(returnedBlog))
       setMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
     }).catch(error => {setMessage(error.response.data.message)})
@@ -92,7 +101,12 @@ const App = () => {
           />
         </Togglable>
         <br />
-        <BlogList blogs={blogs} handleLike={handleLike}/>
+        <BlogList 
+          blogs={blogs} 
+          handleLike={handleLike} 
+          handleDelete={handleDelete}
+          user={user}
+        />
       </div> : <Togglable buttonLabel="login">
         <LoginForm
           username={username}
