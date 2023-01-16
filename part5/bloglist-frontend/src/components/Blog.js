@@ -1,5 +1,6 @@
 import React from 'react'
 import { forwardRef, useState } from 'react'
+import PropTypes from 'prop-types'
 
 const Blog = forwardRef((props, ref) => {
   const blogStyle = {
@@ -36,5 +37,12 @@ const Blog = forwardRef((props, ref) => {
     </div>
   )
 })
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  handleLike: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired
+}
 
 export default Blog
