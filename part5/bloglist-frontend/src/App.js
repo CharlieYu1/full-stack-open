@@ -15,7 +15,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  
+
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
@@ -29,7 +29,7 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      const user = await loginService.login({ 
+      const user = await loginService.login({
         username, password,
       })
       setUser(user)
@@ -64,7 +64,7 @@ const App = () => {
 
   const handleDelete = async (blog) => {
     const id = blog.id
-    blogService.deleteBlog(blog).then(returnedObject => {
+    blogService.deleteBlog(blog).then(() => {
       setBlogs(blogs.filter(blog => (
         blog.id !== id
       )))
@@ -96,14 +96,14 @@ const App = () => {
         <h2>blogs</h2>
         <UserDetail username={user.username} handleLogout={handleLogout} />
         <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-          <NewBlogForm 
+          <NewBlogForm
             createBlog={createBlog}
           />
         </Togglable>
         <br />
-        <BlogList 
-          blogs={blogs} 
-          handleLike={handleLike} 
+        <BlogList
+          blogs={blogs}
+          handleLike={handleLike}
           handleDelete={handleDelete}
           user={user}
         />

@@ -2,7 +2,7 @@ import React from 'react'
 import { forwardRef, useState } from 'react'
 import PropTypes from 'prop-types'
 
-const Blog = forwardRef((props, ref) => {
+const Blog = forwardRef((props) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -15,8 +15,8 @@ const Blog = forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false)
   const handleLike = props.handleLike
   const handleDelete = props.handleDelete
-  
-  const hideWhenVisible = { display: visible ? 'none' : '' }
+
+  //const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
 
   const toggleVisibility = () => {
@@ -44,5 +44,7 @@ Blog.propTypes = {
   handleDelete: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired
 }
+
+Blog.displayName = 'Blog'
 
 export default Blog

@@ -20,7 +20,7 @@ const Notification = ({ message }) => {
     'borderRadius': '5px',
     'padding': '10px',
     'marginBottom': '10px,'
-  }  
+  }
 
   return (
     <div style={message.includes('failed') ? errorStyle : successStyle}>{message}</div>
