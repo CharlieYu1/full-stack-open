@@ -9,7 +9,7 @@ test('renders title and author but not url and likes on default', () => {
     id: 'fakeId1234',
     username: 'user1'
   }
-  
+
   const blog = {
     title: 'A New Blog',
     author: 'Charlie Yu',
@@ -17,13 +17,13 @@ test('renders title and author but not url and likes on default', () => {
     likes: 3,
     user: user,
   }
-  
+
   const { container } = render(<Blog blog={blog} user={user} handleLike={jest.fn()} handleDelete={jest.fn()} />)
   const div = container.querySelector('.blog')
-  
+
   expect(div).toHaveTextContent('A New Blog')
   expect(div).toHaveTextContent('Charlie Yu')
-  
+
   expect(div).not.toHaveTextContent('http://example.com')
   expect(div).not.toHaveTextContent(3)
 })
@@ -33,7 +33,7 @@ test('renders url and likes after clicking show button', async () => {
     id: 'fakeId1234',
     username: 'user1'
   }
-  
+
   const blog = {
     title: 'A New Blog',
     author: 'Charlie Yu',
@@ -41,13 +41,13 @@ test('renders url and likes after clicking show button', async () => {
     likes: 3,
     user: user,
   }
-  
+
   const { container } = render(<Blog blog={blog} user={user} handleLike={jest.fn()} handleDelete={jest.fn()} />)
   const clickingUser = userEvent.setup()
   const button = screen.getByText('show')
   await clickingUser.click(button)
   const div = container.querySelector('.blog')
-  
+
   expect(div).toHaveTextContent('http://example.com')
   expect(div).toHaveTextContent(3)
 })
@@ -57,7 +57,7 @@ test('clicking like button works', async () => {
     id: 'fakeId1234',
     username: 'user1'
   }
-  
+
   const blog = {
     title: 'A New Blog',
     author: 'Charlie Yu',
@@ -65,16 +65,16 @@ test('clicking like button works', async () => {
     likes: 3,
     user: user,
   }
-  
+
   const mockLikeHandler = jest.fn()
 
-  const { container } = render(<Blog blog={blog} user={user} handleLike={mockLikeHandler} handleDelete={jest.fn()} />)
+  render(<Blog blog={blog} user={user} handleLike={mockLikeHandler} handleDelete={jest.fn()} />)
   const clickingUser = userEvent.setup()
   const button = screen.getByText('show')
   await clickingUser.click(button)
   const likeButton = screen.getByText('like')
   await clickingUser.click(likeButton)
   await clickingUser.click(likeButton)
-  
+
   expect(mockLikeHandler.mock.calls).toHaveLength(2)
 })
