@@ -91,9 +91,9 @@ const App = () => {
 
   return (
     <>
+      <h2>blogs</h2>
       {message ? <Notification message={message} /> : null}
       {user ? <div>
-        <h2>blogs</h2>
         <UserDetail username={user.username} handleLogout={handleLogout} />
         <Togglable buttonLabel="create new blog" ref={blogFormRef}>
           <NewBlogForm
