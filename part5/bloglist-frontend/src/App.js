@@ -42,6 +42,7 @@ const App = () => {
       blogService.setToken(user.token)
     } catch (exception) {
       console.log(exception)
+      setMessage(`Error: ${exception.response.data.error}`)
     }
   }
 
@@ -77,7 +78,7 @@ const App = () => {
       console.log('returnedBlog', returnedBlog)
       setBlogs(blogs.concat(returnedBlog))
       setMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
-    }).catch(error => {setMessage(error.response.data.message)})
+    }).catch(exception => setMessage(`Error: ${exception.response.data.error}`))
   }
 
   useEffect(() => {

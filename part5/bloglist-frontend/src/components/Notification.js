@@ -23,7 +23,7 @@ const Notification = ({ message }) => {
   }
 
   return (
-    <div style={message.includes('failed') ? errorStyle : successStyle}>{message}</div>
+    <div style={message.includes('Error') ? errorStyle : successStyle}>{message}</div>
   )
 }
 

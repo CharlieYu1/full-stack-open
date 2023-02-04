@@ -23,11 +23,11 @@ const Blog = forwardRef((props) => {
   return (
     <div className="blog" style={blogStyle}>
       <div>
-        {blog.title} {blog.author} <button onClick={toggleVisibility}>{visible ? 'hide' : 'show'}</button>
+        {blog.title} {blog.author} <button className="showButton" onClick={toggleVisibility}>{visible ? 'hide' : 'show'}</button>
       </div>
       {visible ? <div>
         {blog.url}<br/>
-        likes: {blog.likes} <button onClick={() => handleLike(blog)}>like</button><br/>
+        likes: {blog.likes} <button className="likeButton" onClick={() => handleLike(blog)}>like</button><br/>
         {blog.user.username}<br/>
         {blog.user.username === props.user.username ? <button onClick={() => handleDelete(blog)}>delete</button> : null}
       </div> : null}
