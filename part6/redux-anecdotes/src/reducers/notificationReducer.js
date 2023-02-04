@@ -1,16 +1,18 @@
-import { createAction, createSlice } from '@reduxjs/toolkit'
-const updateVote = createAction('anecdote/vote')
+import { createSlice } from '@reduxjs/toolkit'
 
 const notificationSlice = createSlice({
   name: 'notification',
   initialState: '',
-  reducers: {},
-  extraReducers: (builder) => {
-    builder.addCase(updateVote, (state, action) => {
-      return `You voted ${action.payload.content}`
-    })
-  }
-
+  reducers: {
+    showNotification(state, action) {
+      return action.payload
+    },
+    hideNotification(state, action) {
+      return ''
+    }
+  },
 })
+
+export const { showNotification, hideNotification} = notificationSlice.actions
 
 export default notificationSlice.reducer
