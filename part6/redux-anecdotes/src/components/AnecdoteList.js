@@ -21,10 +21,9 @@ const AnecdoteList = () => {
   const anecdotes = useSelector(state => state.anecdote)
   const filter = useSelector(state => state.filter)
   const dispatch = useDispatch()
-  console.log(anecdotes)
   return (
     <div>
-      {anecdotes.filter(anecdote => anecdote.content.toLowerCase().includes(filter)).map(anecdote =>
+      {anecdotes && anecdotes.filter(anecdote => anecdote.content.toString().toLowerCase().includes(filter)).map(anecdote =>
         <Anecdote 
           key={anecdote.id}
           anecdote={anecdote}
