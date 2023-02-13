@@ -1,14 +1,7 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { createAnecdote } from '../reducers/anecdoteReducer'
-import anecdoteService from '../services/anecdote'
 
-export const asObject = (anecdote) => {
-  return {
-    content: anecdote,
-    votes: 0
-  }
-}
 
 const AnecdoteForm = () => {
   const dispatch = useDispatch()
