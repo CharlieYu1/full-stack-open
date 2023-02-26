@@ -13,7 +13,7 @@ const notificationSlice = createSlice({
   },
 })
 
-export const { showNotification, hideNotification} = notificationSlice.actions
+export const { showNotification, hideNotification } = notificationSlice.actions
 
 export const timedNotification = (message, time) => {
   return async dispatch => {
