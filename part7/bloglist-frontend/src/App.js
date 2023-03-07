@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
@@ -7,16 +8,20 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { useDispatch } from 'react-redux'
+import { initializeBlogs } from './reducers/blogsReducer'
 import { setSuccessMessage, setErrorMessage } from './reducers/notificationReducer'
 
 const App = () => {
   const dispatch = useDispatch()
-  const [allBlogs, setAllBlogs] = useState([])
+  const allBlogs = useSelector(state => state.blogs)
+
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   const blogFormRef = React.createRef()
+
+  console.log(allBlogs)
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -24,17 +29,13 @@ const App = () => {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       blogService.setToken(user.token)
-      getAllBlogs()
+      dispatch(initializeBlogs())
     }
-  }, [])
-
-  const getAllBlogs = async () => {
-    const blogs = await blogService.getAll()
-    setAllBlogs(blogs)
-  }
+  }, [dispatch])
 
   const handleLogin = async (event) => {
     event.preventDefault()
+
     try {
       const user = await loginService.login({
         username,
@@ -46,6 +47,7 @@ const App = () => {
       blogService.setToken(user.token)
       setUsername('')
       setPassword('')
+      dispatch(initializeBlogs())
     } catch (exception) {
       dispatch(setErrorMessage('Wrong credentials'))
       dispatch(setSuccessMessage(null))
@@ -64,9 +66,9 @@ const App = () => {
   const createBlog = async (BlogToAdd) => {
     try {
       blogFormRef.current.toggleVisibility()
-      const createdBlog = await blogService.create(BlogToAdd)
+      //const createdBlog = await blogService.create(BlogToAdd)
       dispatch(setSuccessMessage(`Blog ${BlogToAdd.title} was successfully added`))
-      setAllBlogs(allBlogs.concat(createdBlog))
+      //setAllBlogs(allBlogs.concat(createdBlog))
       dispatch(setErrorMessage(null))
       setTimeout(() => {
         dispatch(setSuccessMessage(null))
@@ -82,13 +84,15 @@ const App = () => {
 
   const updateBlog = async (BlogToUpdate) => {
     try {
-      const updatedBlog = await blogService.update(BlogToUpdate)
+      //const updatedBlog = await blogService.update(BlogToUpdate)
       dispatch(setSuccessMessage(`Blog ${BlogToUpdate.title} was successfully updated`))
+      /*
       setAllBlogs(
         allBlogs.map((blog) =>
           blog.id !== BlogToUpdate.id ? blog : updatedBlog
         )
       )
+      */
       dispatch(setErrorMessage(null))
       setTimeout(() => {
         dispatch(setSuccessMessage(null))
@@ -109,7 +113,7 @@ const App = () => {
         dispatch(setSuccessMessage(
           `Blog ${BlogToDelete.title} was successfully deleted`
         ))
-        setAllBlogs(allBlogs.filter((blog) => blog.id !== BlogToDelete.id))
+        //setAllBlogs(allBlogs.filter((blog) => blog.id !== BlogToDelete.id))
         dispatch(setErrorMessage(null))
         setTimeout(() => {
           dispatch(setSuccessMessage(null))
@@ -149,7 +153,7 @@ const App = () => {
           <Togglable buttonLabel="Add new blog" ref={blogFormRef}>
             <BlogForm createBlog={createBlog} />
           </Togglable>
-          {allBlogs.sort(byLikes).map((blog) => (
+          {allBlogs && allBlogs.slice().sort(byLikes).map((blog) => (
             <Blog
               key={blog.id}
               blog={blog}
