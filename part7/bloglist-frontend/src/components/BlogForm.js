@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
+import { createBlog } from '../reducers/blogsReducer'
 
-const BlogForm = ({ createBlog }) => {
+const BlogForm = ({ blogFormRef }) => {
+  const dispatch = useDispatch()
+
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
@@ -18,16 +22,23 @@ const BlogForm = ({ createBlog }) => {
     setNewUrl(event.target.value)
   }
 
-  const addBlog = (event) => {
+  const addBlog = async (event) => {
     event.preventDefault()
-    createBlog({
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl,
-    })
-    setNewTitle('')
-    setNewAuthor('')
-    setNewUrl('')
+
+    try {
+      await dispatch(createBlog({
+        title: newTitle,
+        author: newAuthor,
+        url: newUrl,
+      }))
+      setNewTitle('')
+      setNewAuthor('')
+      setNewUrl('')
+      blogFormRef.current.toggleVisibility()
+    } catch (error) {
+      //console.log(error)
+    }
+
   }
 
   return (

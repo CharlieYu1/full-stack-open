@@ -63,25 +63,6 @@ const App = () => {
     setUser(null)
   }
 
-  const createBlog = async (BlogToAdd) => {
-    try {
-      blogFormRef.current.toggleVisibility()
-      //const createdBlog = await blogService.create(BlogToAdd)
-      dispatch(setSuccessMessage(`Blog ${BlogToAdd.title} was successfully added`))
-      //setAllBlogs(allBlogs.concat(createdBlog))
-      dispatch(setErrorMessage(null))
-      setTimeout(() => {
-        dispatch(setSuccessMessage(null))
-      }, 5000)
-    } catch (exception) {
-      dispatch(setErrorMessage(`Cannot add blog ${BlogToAdd.title}`))
-      dispatch(setSuccessMessage(null))
-      setTimeout(() => {
-        dispatch(setSuccessMessage(null))
-      }, 5000)
-    }
-  }
-
   const updateBlog = async (BlogToUpdate) => {
     try {
       //const updatedBlog = await blogService.update(BlogToUpdate)
@@ -151,7 +132,7 @@ const App = () => {
             </button>
           </p>
           <Togglable buttonLabel="Add new blog" ref={blogFormRef}>
-            <BlogForm createBlog={createBlog} />
+            <BlogForm blogFormRef={blogFormRef}/>
           </Togglable>
           {allBlogs && allBlogs.slice().sort(byLikes).map((blog) => (
             <Blog
