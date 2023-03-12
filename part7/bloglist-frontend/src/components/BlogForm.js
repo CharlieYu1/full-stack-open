@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import PropTypes from 'prop-types'
 import { createBlog } from '../reducers/blogsReducer'
 
 const BlogForm = ({ blogFormRef }) => {
@@ -59,10 +58,6 @@ const BlogForm = ({ blogFormRef }) => {
       </div>
     </form>
   )
-}
-
-BlogForm.propTypes = {
-  createBlog: PropTypes.func.isRequired,
 }
 
 export default BlogForm

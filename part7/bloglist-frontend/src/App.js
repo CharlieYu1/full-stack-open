@@ -63,52 +63,6 @@ const App = () => {
     setUser(null)
   }
 
-  const updateBlog = async (BlogToUpdate) => {
-    try {
-      //const updatedBlog = await blogService.update(BlogToUpdate)
-      dispatch(setSuccessMessage(`Blog ${BlogToUpdate.title} was successfully updated`))
-      /*
-      setAllBlogs(
-        allBlogs.map((blog) =>
-          blog.id !== BlogToUpdate.id ? blog : updatedBlog
-        )
-      )
-      */
-      dispatch(setErrorMessage(null))
-      setTimeout(() => {
-        dispatch(setSuccessMessage(null))
-      }, 5000)
-    } catch (exception) {
-      dispatch(setErrorMessage(`Cannot update blog ${BlogToUpdate.title}`))
-      dispatch(setSuccessMessage(null))
-      setTimeout(() => {
-        dispatch(setSuccessMessage(null))
-      }, 5000)
-    }
-  }
-
-  const deleteBlog = async (BlogToDelete) => {
-    try {
-      if (window.confirm(`Delete ${BlogToDelete.title} ?`)) {
-        blogService.remove(BlogToDelete.id)
-        dispatch(setSuccessMessage(
-          `Blog ${BlogToDelete.title} was successfully deleted`
-        ))
-        //setAllBlogs(allBlogs.filter((blog) => blog.id !== BlogToDelete.id))
-        dispatch(setErrorMessage(null))
-        setTimeout(() => {
-          dispatch(setSuccessMessage(null))
-        }, 5000)
-      }
-    } catch (exception) {
-      dispatch(setErrorMessage(`Cannot delete blog ${BlogToDelete.title}`))
-      dispatch(setSuccessMessage(null))
-      setTimeout(() => {
-        dispatch(setSuccessMessage(null))
-      }, 5000)
-    }
-  }
-
   const byLikes = (b1, b2) => b2.likes - b1.likes
 
   return (
@@ -138,8 +92,6 @@ const App = () => {
             <Blog
               key={blog.id}
               blog={blog}
-              updateBlog={updateBlog}
-              deleteBlog={deleteBlog}
             />
           ))}
         </div>

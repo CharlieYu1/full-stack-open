@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { updateBlog, deleteBlog } from '../reducers/blogsReducer'
 import PropTypes from 'prop-types'
 
 const Blog = (props) => {
   const blog = props.blog
-  const [blogObject, setBlogObject] = useState(blog)
   const [visible, setVisible] = useState(false)
   const showWhenVisible = { display: visible ? '' : 'none' }
+
+  const dispatch = useDispatch()
 
   const toggleVisibility = () => {
     setVisible(!visible)
@@ -18,11 +21,12 @@ const Blog = (props) => {
       ...blog,
       likes: blog.likes + 1,
     }
-    props.updateBlog(updatedBlog)
-    setBlogObject(updatedBlog)
+    dispatch(updateBlog(updatedBlog))
   }
 
-  const removeBlog = () => props.deleteBlog(blog)
+  const removeBlog = () => {
+    dispatch(deleteBlog(blog))
+  }
 
   const blogStyle = {
     paddingTop: 10,
@@ -43,7 +47,7 @@ const Blog = (props) => {
       <div style={showWhenVisible}>
         <p>{blog.url}</p>
         <p>
-          {blogObject.likes}{' '}
+          {blog.likes}{' '}
           <button id="like-button" onClick={increaseLikes}>
             like
           </button>
@@ -58,8 +62,6 @@ const Blog = (props) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  updateBlog: PropTypes.func.isRequired,
-  deleteBlog: PropTypes.func.isRequired,
 }
 
 export default Blog
