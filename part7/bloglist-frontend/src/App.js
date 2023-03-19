@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import Home from './components/Home'
+import User from './components/User'
 import Users from './components/Users'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
@@ -84,6 +85,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={user && <Home />} />
           <Route path="/users" element={user && <Users />} />
+          <Route path="/users/:id" element={user && <User />} />
         </Routes>
       </div>
     </Router>

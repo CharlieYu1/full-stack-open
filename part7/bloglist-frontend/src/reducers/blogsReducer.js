@@ -28,7 +28,6 @@ const { setBlogs, appendBlog, updateBlogAction, deleteBlogAction } = blogsSlice.
 export const initializeBlogs = () => {
 
   return async dispatch => {
-    console.log('initializeBlogs called')
     const blogs = await blogsService.getAll()
     dispatch(setBlogs(blogs))
   }

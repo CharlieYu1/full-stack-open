@@ -1,6 +1,7 @@
 import React from 'react'
-import getAllUsers from '../services/users'
+import { getAllUsers } from '../services/users'
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 
 const Users = () => {
   const [allUsers, setAllUsers] = useState([])
@@ -9,7 +10,6 @@ const Users = () => {
   useEffect(() => {
     getAllUsers().then(users => setAllUsers(users))
   }, [])
-  console.log(allUsers)
 
   if (!allUsers) {
 
@@ -29,7 +29,7 @@ const Users = () => {
         <tbody>
           {allUsers.map(user => <tr key={user.id}>
             <td>
-              {user.username}
+              <Link to={`/users/${user.id}`}>{user.username}</Link>
             </td>
             <td>
               {user.blogs.length}
