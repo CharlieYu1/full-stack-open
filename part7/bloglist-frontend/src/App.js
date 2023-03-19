@@ -1,27 +1,21 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
-import Blog from './components/Blog'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import Home from './components/Home'
+import Users from './components/Users'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
-import BlogForm from './components/BlogForm'
-import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import { useDispatch } from 'react-redux'
 import { initializeBlogs } from './reducers/blogsReducer'
 import { setSuccessMessage, setErrorMessage } from './reducers/notificationReducer'
+import { useDispatch } from 'react-redux'
 
 const App = () => {
   const dispatch = useDispatch()
-  const allBlogs = useSelector(state => state.blogs)
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-
-  const blogFormRef = React.createRef()
-
-  console.log(allBlogs)
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -63,40 +57,37 @@ const App = () => {
     setUser(null)
   }
 
-  const byLikes = (b1, b2) => b2.likes - b1.likes
-
   return (
-    <div>
-      <h2>Blogs</h2>
-      <Notification />
-      {user === null ? (
-        <LoginForm
-          handleLogin={handleLogin}
-          username={username}
-          setUsername={setUsername}
-          setPassword={setPassword}
-          password={password}
-        />
-      ) : (
-        <div>
-          <p>
-            {user.name} logged in
-            <button onClick={handleLogout} type="submit">
-              logout
-            </button>
-          </p>
-          <Togglable buttonLabel="Add new blog" ref={blogFormRef}>
-            <BlogForm blogFormRef={blogFormRef}/>
-          </Togglable>
-          {allBlogs && allBlogs.slice().sort(byLikes).map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-            />
-          ))}
-        </div>
-      )}
-    </div>
+    <Router>
+      <div>
+        <h2>Blogs</h2>
+        <Notification />
+        {user === null ? (
+          <LoginForm
+            handleLogin={handleLogin}
+            username={username}
+            setUsername={setUsername}
+            setPassword={setPassword}
+            password={password}
+          />
+        ) : (
+          <div>
+            <p>
+              {user.name} logged in
+              <button onClick={handleLogout} type="submit">
+                logout
+              </button>
+            </p>
+          </div>
+        )}
+
+        <Routes>
+          <Route path="/" element={user && <Home />} />
+          <Route path="/users" element={user && <Users />} />
+        </Routes>
+      </div>
+    </Router>
+
   )
 }
 
