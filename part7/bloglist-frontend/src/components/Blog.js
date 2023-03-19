@@ -1,32 +1,9 @@
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { updateBlog, deleteBlog } from '../reducers/blogsReducer'
+import React from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
 const Blog = (props) => {
   const blog = props.blog
-  const [visible, setVisible] = useState(false)
-  const showWhenVisible = { display: visible ? '' : 'none' }
-
-  const dispatch = useDispatch()
-
-  const toggleVisibility = () => {
-    setVisible(!visible)
-  }
-
-  const buttonLabel = visible ? 'hide' : 'view'
-
-  const increaseLikes = () => {
-    const updatedBlog = {
-      ...blog,
-      likes: blog.likes + 1,
-    }
-    dispatch(updateBlog(updatedBlog))
-  }
-
-  const removeBlog = () => {
-    dispatch(deleteBlog(blog))
-  }
 
   const blogStyle = {
     paddingTop: 10,
@@ -37,25 +14,14 @@ const Blog = (props) => {
   }
 
   return (
-    <div style={blogStyle} className="blog">
-      <div>
-        <p>
-          {blog.title} - {blog.author}{' '}
-          <button onClick={toggleVisibility}>{buttonLabel}</button>
-        </p>
-      </div>
-      <div style={showWhenVisible}>
-        <p>{blog.url}</p>
-        <p>
-          {blog.likes}{' '}
-          <button id="like-button" onClick={increaseLikes}>
-            like
-          </button>
-        </p>
-        <button id="remove" onClick={removeBlog}>
-          remove
-        </button>
-      </div>
+    <div key={blog.id} style={blogStyle} className="blog">
+      <Link to={`/blogs/${blog.id}`}>
+        <div>
+          <p>
+            {blog.title} - {blog.author}{' '}
+          </p>
+        </div>
+      </Link>
     </div>
   )
 }

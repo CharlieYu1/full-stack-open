@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link, } from 'react-router-dom'
 import Home from './components/Home'
+import BlogView from './components/BlogView'
 import User from './components/User'
 import Users from './components/Users'
 import Notification from './components/Notification'
@@ -17,6 +18,8 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+
+
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -59,36 +62,37 @@ const App = () => {
   }
 
   return (
-    <Router>
-      <div>
-        <h2>Blogs</h2>
-        <Notification />
-        {user === null ? (
-          <LoginForm
-            handleLogin={handleLogin}
-            username={username}
-            setUsername={setUsername}
-            setPassword={setPassword}
-            password={password}
-          />
-        ) : (
-          <div>
-            <p>
-              {user.name} logged in
-              <button onClick={handleLogout} type="submit">
-                logout
-              </button>
-            </p>
-          </div>
-        )}
 
-        <Routes>
-          <Route path="/" element={user && <Home />} />
-          <Route path="/users" element={user && <Users />} />
-          <Route path="/users/:id" element={user && <User />} />
-        </Routes>
-      </div>
-    </Router>
+    <div>
+      <h2>Blogs</h2>
+      <Notification />
+      {user === null ? (
+        <LoginForm
+          handleLogin={handleLogin}
+          username={username}
+          setUsername={setUsername}
+          setPassword={setPassword}
+          password={password}
+        />
+      ) : (
+        <div>
+          <p>
+            {user.name} logged in
+            <button onClick={handleLogout} type="submit">
+              logout
+            </button>
+          </p>
+        </div>
+      )}
+
+      <Routes>
+        <Route path="/" element={user && <Home />} />
+        <Route path="/users" element={user && <Users />} />
+        <Route path="/users/:id" element={user && <User />} />
+        <Route path="/blogs/:id" element={user && <BlogView />} />
+      </Routes>
+    </div>
+
 
   )
 }
