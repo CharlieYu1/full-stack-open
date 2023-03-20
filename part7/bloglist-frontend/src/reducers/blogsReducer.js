@@ -99,4 +99,24 @@ export const deleteBlog = blogToDelete => {
   }
 }
 
+export const addCommentToBlog = (id, comment) => {
+  return async dispatch => {
+    try {
+      const updatedBlog = await blogsService.newComment(id, comment)
+      dispatch(setSuccessMessage(`Added comment ${comment}`))
+      dispatch(updateBlogAction(updatedBlog))
+      dispatch(setErrorMessage(null))
+      setTimeout(() => {
+        dispatch(setSuccessMessage(null))
+      }, 5000)
+    } catch (exception) {
+      dispatch(setErrorMessage(`Cannot add comment ${comment}`))
+      dispatch(setSuccessMessage(null))
+      setTimeout(() => {
+        dispatch(setSuccessMessage(null))
+      }, 5000)
+    }
+  }
+}
+
 export default blogsSlice.reducer

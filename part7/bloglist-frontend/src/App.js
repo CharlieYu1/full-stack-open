@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Routes, Route, Link, } from 'react-router-dom'
+import { Routes, Route, Link } from 'react-router-dom'
 import Home from './components/Home'
 import BlogView from './components/BlogView'
 import User from './components/User'
@@ -64,9 +64,19 @@ const App = () => {
   return (
 
     <div>
-      <h2>Blogs</h2>
+      <div>
+        <Link to='/'>blogs</Link>
+        <Link to='/users'>users</Link>
+        {user && (<p>
+          {user.name} logged in
+          <button onClick={handleLogout} type="submit">
+            logout
+          </button>
+        </p>)}
+      </div>
+      <h2>Blogs App</h2>
       <Notification />
-      {user === null ? (
+      {user === null && (
         <LoginForm
           handleLogin={handleLogin}
           username={username}
@@ -74,15 +84,6 @@ const App = () => {
           setPassword={setPassword}
           password={password}
         />
-      ) : (
-        <div>
-          <p>
-            {user.name} logged in
-            <button onClick={handleLogout} type="submit">
-              logout
-            </button>
-          </p>
-        </div>
       )}
 
       <Routes>
