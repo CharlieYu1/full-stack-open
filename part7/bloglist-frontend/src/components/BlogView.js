@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { useMatch } from 'react-router-dom'
 import { updateBlog, deleteBlog, addCommentToBlog } from '../reducers/blogsReducer'
+import { Form, Button } from 'react-bootstrap'
 
 const BlogView = () => {
   const dispatch = useDispatch()
@@ -50,19 +51,21 @@ const BlogView = () => {
         <p><a href={blog.url}>{blog.url}</a></p>
         <p>
           {blog.likes}{' '}
-          <button id="like-button" onClick={increaseLikes}>
+          <Button varaint="primary" id="like-button" onClick={increaseLikes}>
             like
-          </button>
+          </Button>
         </p>
       </div>
-      <button id="remove" onClick={removeBlog}>
+      <Button variant="secondary" id="remove" onClick={removeBlog}>
         remove
-      </button>
+      </Button>
+      <p>added by {blog.user.username}</p>
       <h4>comments</h4>
-      <form onSubmit={addComment}>
-        <input value={comment} onChange={handleCommentChange} />
-        <button type="submit">add comment</button>
-      </form>
+
+      <Form style={{ display: 'flex' }} onSubmit={addComment}>
+        <Form.Control value={comment} onChange={handleCommentChange} />
+        <Button style={{ width: '200px' }} type="submit">add comment</Button>
+      </Form>
       <ul>
         {blog.comments.map((comment, i) => <li key={i}>{comment}</li>)}
       </ul>

@@ -11,6 +11,7 @@ import loginService from './services/login'
 import { initializeBlogs } from './reducers/blogsReducer'
 import { setSuccessMessage, setErrorMessage } from './reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
+import { Navbar, Nav, Button } from 'react-bootstrap'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -19,7 +20,9 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
-
+  const padding = {
+    padding: 5
+  }
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -63,17 +66,29 @@ const App = () => {
 
   return (
 
-    <div>
-      <div>
-        <Link to='/'>blogs</Link>
-        <Link to='/users'>users</Link>
-        {user && (<p>
-          {user.name} logged in
-          <button onClick={handleLogout} type="submit">
-            logout
-          </button>
-        </p>)}
-      </div>
+    <div className="container">
+      <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+        <Navbar.Toggle  aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="me-auto">
+            <Nav.Link>
+              <Link style={padding} to='/'>home</Link>
+            </Nav.Link>
+            <Nav.Link>
+              <Link style={padding} to='/users'>users</Link>
+            </Nav.Link>
+            {user && (<p style={padding}>
+              {user.name} logged in
+              <Button variant="secondary" onClick={handleLogout} size="sm" type="submit">
+                logout
+              </Button>
+            </p>)}
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
+
+
+
       <h2>Blogs App</h2>
       <Notification />
       {user === null && (

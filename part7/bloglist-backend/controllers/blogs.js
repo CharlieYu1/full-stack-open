@@ -106,7 +106,6 @@ blogRouter.put('/:id', async (request, response, next) => {
 
 blogRouter.post('/:id/comments', async (request, response, next) => {
     const comment = request.body.comment
-    console.log(request.body)
     const blogToUpdate = await Blog.findById(request.params.id)
 
     try {
@@ -115,6 +114,7 @@ blogRouter.post('/:id/comments', async (request, response, next) => {
             author: blogToUpdate.author,
             url: blogToUpdate.url,
             likes: blogToUpdate.likes,
+            user: blogToUpdate.user,
             comments: blogToUpdate.comments.concat(comment)
         }
         const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
